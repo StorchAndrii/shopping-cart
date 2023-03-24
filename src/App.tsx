@@ -8,6 +8,7 @@ import Flex from "./components/Flex";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
+import { setCart } from "./store/cart/cart.reducer";
 
 const App = () => {
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
@@ -15,8 +16,13 @@ const App = () => {
   const total = cartItems.reduce((acc, item) => {
     return acc + item.price;
   }, 0);
-  console.log(total);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "{}");
+    dispatch(setCart(cart ? cart : []));
+  }, []);
 
   useEffect(() => {
     dispatch({ type: "FETCH_PRODUCTS" });

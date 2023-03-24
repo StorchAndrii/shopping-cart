@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import Flex from "../Flex";
 
 import Image from "../Image";
@@ -7,6 +7,8 @@ import Subtitle from "../Subtitle";
 import { useAppDispatch } from "../../store/hooks";
 import { addToCart, removeFromCart } from "../../store/cart/cart.reducer";
 import { IProduct } from "../../interface/product.interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 interface IProps {
   product: IProduct;
@@ -15,6 +17,7 @@ interface IProps {
 
 const Product: FC<IProps> = ({ product, cart = false }) => {
   const dispatch = useAppDispatch();
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
 
   const addToCartHandler = () => {
     dispatch(addToCart(product));
@@ -23,6 +26,9 @@ const Product: FC<IProps> = ({ product, cart = false }) => {
   const removeFromCartHandler = () => {
     dispatch(removeFromCart(product.id));
   };
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [addToCartHandler, removeFromCartHandler]);
   return (
     <Flex margin={"0 auto"} align={"flex-end;"} width={"80%"}>
       <Flex direction={"column"} margin={"16px 0 0 "}>
